@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using PosSystem.Data;
 using PosSystem.Models;
@@ -22,6 +23,17 @@ namespace PosSystem.Forms
         // 商品目前庫存對照表（加入購物車時用來檢查是否超賣）
         private Dictionary<int, int> _stockMap = new Dictionary<int, int>();
 
+        // 在文字框內顯示灰色提示文字（開始輸入後自動消失）
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, string lParam);
+        private const int EM_SETCUEBANNER = 0x1501;
+
+        private static void SetHint(TextBox box, string hint)
+        {
+            // wParam = 1 表示即使游標在框內也顯示提示
+            SendMessage(box.Handle, EM_SETCUEBANNER, (IntPtr)1, hint);
+        }
+
         public frmPos()
         {
             InitializeComponent();
@@ -29,6 +41,8 @@ namespace PosSystem.Forms
 
         private void frmPos_Load(object sender, EventArgs e)
         {
+            SetHint(txtBarcode, "掃描或輸入條碼後按 Enter");
+            SetHint(txtSearch, "輸入商品名稱搜尋");
             LoadProducts();
             RefreshCart();
             txtBarcode.Focus();
