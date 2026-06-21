@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -75,8 +76,7 @@ namespace PosSystem.Forms
             var p = _productRepo.GetByBarcode(code);
             if (p == null)
             {
-                MessageBox.Show("找不到條碼對應的商品。", "提示",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ShowFeedback($"✗ 找不到此條碼：{code}", Color.Firebrick);
             }
             else
             {
@@ -95,8 +95,7 @@ namespace PosSystem.Forms
 
             if (currentQty + 1 > stock)
             {
-                MessageBox.Show($"「{p.Name}」庫存不足（現有 {stock} 件）。", "庫存不足",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ShowFeedback($"✗ 「{p.Name}」庫存不足（現有 {stock} 件）", Color.Firebrick);
                 return;
             }
 
@@ -112,6 +111,14 @@ namespace PosSystem.Forms
                 });
 
             RefreshCart();
+            ShowFeedback($"✓ 已加入：{p.Name}", Color.SeaGreen);
+        }
+
+        /// <summary>在條碼欄下方顯示一行操作回饋（綠＝成功 / 紅＝失敗）。</summary>
+        private void ShowFeedback(string text, Color color)
+        {
+            lblBarcodeFeedback.ForeColor = color;
+            lblBarcodeFeedback.Text = text;
         }
 
         // ---- 購物車操作 ----
@@ -166,11 +173,27 @@ namespace PosSystem.Forms
             lblTotal.Text = $"總計：$ {Total:N0}";
             UpdateChange();
             btnCheckout.Enabled = _cart.Count > 0;
+            // 購物車空時顯示引導提示，蓋住空白表格
+            lblEmptyHint.Visible = _cart.Count == 0;
         }
 
         private decimal Total => _cart.Sum(i => i.Subtotal);
 
         private void numPay_ValueChanged(object sender, EventArgs e) => UpdateChange();
+
+        // ---- 快捷收款按鈕 ----
+
+        // 「剛好」：實收金額直接等於總計
+        private void btnExact_Click(object sender, EventArgs e)
+            => numPay.Value = Math.Min(Total, numPay.Maximum);
+
+        private void AddPay(decimal amount)
+            => numPay.Value = Math.Min(numPay.Value + amount, numPay.Maximum);
+
+        private void btnPay100_Click(object sender, EventArgs e) => AddPay(100);
+        private void btnPay500_Click(object sender, EventArgs e) => AddPay(500);
+        private void btnPay1000_Click(object sender, EventArgs e) => AddPay(1000);
+        private void btnPayClear_Click(object sender, EventArgs e) => numPay.Value = 0;
 
         private void UpdateChange()
         {
@@ -215,6 +238,7 @@ namespace PosSystem.Forms
                 numPay.Value = 0;
                 LoadProducts();   // 庫存已變動，重新載入
                 RefreshCart();
+                ShowFeedback($"✓ 結帳完成，單號 {orderNo}", Color.SeaGreen);
                 txtBarcode.Focus();
             }
             catch (Exception ex)

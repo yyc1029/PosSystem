@@ -19,10 +19,12 @@ namespace PosSystem.Forms
         {
             this.pnlLeft = new System.Windows.Forms.Panel();
             this.dgvProducts = new System.Windows.Forms.DataGridView();
+            this.colPBarcode = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPStock = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlPick = new System.Windows.Forms.Panel();
+            this.lblBarcodeFeedback = new System.Windows.Forms.Label();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearch = new System.Windows.Forms.Label();
             this.txtBarcode = new System.Windows.Forms.TextBox();
@@ -34,7 +36,13 @@ namespace PosSystem.Forms
             this.colCPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCSub = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lblEmptyHint = new System.Windows.Forms.Label();
             this.pnlCheckout = new System.Windows.Forms.Panel();
+            this.btnPayClear = new System.Windows.Forms.Button();
+            this.btnPay1000 = new System.Windows.Forms.Button();
+            this.btnPay500 = new System.Windows.Forms.Button();
+            this.btnPay100 = new System.Windows.Forms.Button();
+            this.btnExact = new System.Windows.Forms.Button();
             this.btnCheckout = new System.Windows.Forms.Button();
             this.lblChange = new System.Windows.Forms.Label();
             this.numPay = new System.Windows.Forms.NumericUpDown();
@@ -74,18 +82,26 @@ namespace PosSystem.Forms
             this.dgvProducts.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvProducts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvProducts.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-                this.colPName, this.colPPrice, this.colPStock});
+                this.colPBarcode, this.colPName, this.colPPrice, this.colPStock});
             this.dgvProducts.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvProducts.Location = new System.Drawing.Point(0, 120);
+            this.dgvProducts.Location = new System.Drawing.Point(0, 150);
             this.dgvProducts.MultiSelect = false;
             this.dgvProducts.Name = "dgvProducts";
             this.dgvProducts.ReadOnly = true;
             this.dgvProducts.RowHeadersVisible = false;
             this.dgvProducts.RowTemplate.Height = 30;
             this.dgvProducts.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvProducts.Size = new System.Drawing.Size(460, 530);
+            this.dgvProducts.Size = new System.Drawing.Size(460, 500);
             this.dgvProducts.TabIndex = 1;
             this.dgvProducts.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvProducts_CellDoubleClick);
+            //
+            // colPBarcode
+            //
+            this.colPBarcode.DataPropertyName = "Barcode";
+            this.colPBarcode.HeaderText = "條碼";
+            this.colPBarcode.Name = "colPBarcode";
+            this.colPBarcode.ReadOnly = true;
+            this.colPBarcode.Width = 110;
             //
             // colPName
             //
@@ -101,7 +117,7 @@ namespace PosSystem.Forms
             this.colPPrice.HeaderText = "售價";
             this.colPPrice.Name = "colPPrice";
             this.colPPrice.ReadOnly = true;
-            this.colPPrice.Width = 90;
+            this.colPPrice.Width = 65;
             //
             // colPStock
             //
@@ -109,10 +125,11 @@ namespace PosSystem.Forms
             this.colPStock.HeaderText = "庫存";
             this.colPStock.Name = "colPStock";
             this.colPStock.ReadOnly = true;
-            this.colPStock.Width = 70;
+            this.colPStock.Width = 55;
             //
             // pnlPick
             //
+            this.pnlPick.Controls.Add(this.lblBarcodeFeedback);
             this.pnlPick.Controls.Add(this.txtSearch);
             this.pnlPick.Controls.Add(this.lblSearch);
             this.pnlPick.Controls.Add(this.txtBarcode);
@@ -121,7 +138,7 @@ namespace PosSystem.Forms
             this.pnlPick.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlPick.Location = new System.Drawing.Point(0, 0);
             this.pnlPick.Name = "pnlPick";
-            this.pnlPick.Size = new System.Drawing.Size(460, 120);
+            this.pnlPick.Size = new System.Drawing.Size(460, 150);
             this.pnlPick.TabIndex = 0;
             //
             // lblPick
@@ -129,7 +146,7 @@ namespace PosSystem.Forms
             this.lblPick.AutoSize = true;
             this.lblPick.Font = new System.Drawing.Font("Microsoft JhengHei UI", 11F, System.Drawing.FontStyle.Bold);
             this.lblPick.ForeColor = System.Drawing.Color.FromArgb(37, 42, 58);
-            this.lblPick.Location = new System.Drawing.Point(14, 10);
+            this.lblPick.Location = new System.Drawing.Point(14, 8);
             this.lblPick.Name = "lblPick";
             this.lblPick.Size = new System.Drawing.Size(260, 21);
             this.lblPick.TabIndex = 0;
@@ -138,7 +155,7 @@ namespace PosSystem.Forms
             // lblBarcode
             //
             this.lblBarcode.AutoSize = true;
-            this.lblBarcode.Location = new System.Drawing.Point(14, 48);
+            this.lblBarcode.Location = new System.Drawing.Point(14, 44);
             this.lblBarcode.Name = "lblBarcode";
             this.lblBarcode.Size = new System.Drawing.Size(44, 20);
             this.lblBarcode.TabIndex = 1;
@@ -146,32 +163,43 @@ namespace PosSystem.Forms
             //
             // txtBarcode
             //
-            this.txtBarcode.Location = new System.Drawing.Point(70, 44);
+            this.txtBarcode.Location = new System.Drawing.Point(70, 40);
             this.txtBarcode.Name = "txtBarcode";
             this.txtBarcode.Size = new System.Drawing.Size(250, 27);
             this.txtBarcode.TabIndex = 2;
             this.txtBarcode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBarcode_KeyDown);
             //
+            // lblBarcodeFeedback
+            //
+            this.lblBarcodeFeedback.AutoSize = true;
+            this.lblBarcodeFeedback.Font = new System.Drawing.Font("Microsoft JhengHei UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblBarcodeFeedback.ForeColor = System.Drawing.Color.SeaGreen;
+            this.lblBarcodeFeedback.Location = new System.Drawing.Point(68, 72);
+            this.lblBarcodeFeedback.Name = "lblBarcodeFeedback";
+            this.lblBarcodeFeedback.Size = new System.Drawing.Size(0, 18);
+            this.lblBarcodeFeedback.TabIndex = 3;
+            //
             // lblSearch
             //
             this.lblSearch.AutoSize = true;
-            this.lblSearch.Location = new System.Drawing.Point(14, 84);
+            this.lblSearch.Location = new System.Drawing.Point(14, 110);
             this.lblSearch.Name = "lblSearch";
             this.lblSearch.Size = new System.Drawing.Size(44, 20);
-            this.lblSearch.TabIndex = 3;
+            this.lblSearch.TabIndex = 4;
             this.lblSearch.Text = "搜尋";
             //
             // txtSearch
             //
-            this.txtSearch.Location = new System.Drawing.Point(70, 80);
+            this.txtSearch.Location = new System.Drawing.Point(70, 106);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(250, 27);
-            this.txtSearch.TabIndex = 4;
+            this.txtSearch.TabIndex = 5;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             //
             // pnlRight
             //
             this.pnlRight.Controls.Add(this.dgvCart);
+            this.pnlRight.Controls.Add(this.lblEmptyHint);
             this.pnlRight.Controls.Add(this.pnlCheckout);
             this.pnlRight.Controls.Add(this.lblCartTitle);
             this.pnlRight.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -194,62 +222,14 @@ namespace PosSystem.Forms
             this.lblCartTitle.Text = "🛒 購物車";
             this.lblCartTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             //
-            // dgvCart
-            //
-            this.dgvCart.AllowUserToAddRows = false;
-            this.dgvCart.AllowUserToDeleteRows = false;
-            this.dgvCart.AutoGenerateColumns = false;
-            this.dgvCart.BackgroundColor = System.Drawing.Color.White;
-            this.dgvCart.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgvCart.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvCart.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-                this.colCName, this.colCPrice, this.colCQty, this.colCSub});
-            this.dgvCart.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvCart.Location = new System.Drawing.Point(8, 40);
-            this.dgvCart.MultiSelect = false;
-            this.dgvCart.Name = "dgvCart";
-            this.dgvCart.ReadOnly = true;
-            this.dgvCart.RowHeadersVisible = false;
-            this.dgvCart.RowTemplate.Height = 32;
-            this.dgvCart.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvCart.Size = new System.Drawing.Size(524, 400);
-            this.dgvCart.TabIndex = 1;
-            //
-            // colCName
-            //
-            this.colCName.DataPropertyName = "ProductName";
-            this.colCName.HeaderText = "商品";
-            this.colCName.Name = "colCName";
-            this.colCName.ReadOnly = true;
-            this.colCName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            //
-            // colCPrice
-            //
-            this.colCPrice.DataPropertyName = "UnitPrice";
-            this.colCPrice.HeaderText = "單價";
-            this.colCPrice.Name = "colCPrice";
-            this.colCPrice.ReadOnly = true;
-            this.colCPrice.Width = 80;
-            //
-            // colCQty
-            //
-            this.colCQty.DataPropertyName = "Quantity";
-            this.colCQty.HeaderText = "數量";
-            this.colCQty.Name = "colCQty";
-            this.colCQty.ReadOnly = true;
-            this.colCQty.Width = 60;
-            //
-            // colCSub
-            //
-            this.colCSub.DataPropertyName = "Subtotal";
-            this.colCSub.HeaderText = "小計";
-            this.colCSub.Name = "colCSub";
-            this.colCSub.ReadOnly = true;
-            this.colCSub.Width = 100;
-            //
             // pnlCheckout
             //
             this.pnlCheckout.BackColor = System.Drawing.Color.FromArgb(248, 249, 252);
+            this.pnlCheckout.Controls.Add(this.btnPayClear);
+            this.pnlCheckout.Controls.Add(this.btnPay1000);
+            this.pnlCheckout.Controls.Add(this.btnPay500);
+            this.pnlCheckout.Controls.Add(this.btnPay100);
+            this.pnlCheckout.Controls.Add(this.btnExact);
             this.pnlCheckout.Controls.Add(this.btnCheckout);
             this.pnlCheckout.Controls.Add(this.lblChange);
             this.pnlCheckout.Controls.Add(this.numPay);
@@ -260,9 +240,9 @@ namespace PosSystem.Forms
             this.pnlCheckout.Controls.Add(this.btnPlus);
             this.pnlCheckout.Controls.Add(this.btnMinus);
             this.pnlCheckout.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlCheckout.Location = new System.Drawing.Point(8, 440);
+            this.pnlCheckout.Location = new System.Drawing.Point(8, 400);
             this.pnlCheckout.Name = "pnlCheckout";
-            this.pnlCheckout.Size = new System.Drawing.Size(524, 210);
+            this.pnlCheckout.Size = new System.Drawing.Size(524, 250);
             this.pnlCheckout.TabIndex = 2;
             //
             // btnMinus
@@ -311,7 +291,7 @@ namespace PosSystem.Forms
             //
             this.lblTotal.Font = new System.Drawing.Font("Microsoft JhengHei UI", 20F, System.Drawing.FontStyle.Bold);
             this.lblTotal.ForeColor = System.Drawing.Color.FromArgb(192, 57, 43);
-            this.lblTotal.Location = new System.Drawing.Point(8, 62);
+            this.lblTotal.Location = new System.Drawing.Point(8, 58);
             this.lblTotal.Name = "lblTotal";
             this.lblTotal.Size = new System.Drawing.Size(508, 42);
             this.lblTotal.TabIndex = 4;
@@ -322,7 +302,7 @@ namespace PosSystem.Forms
             //
             this.lblPayLabel.AutoSize = true;
             this.lblPayLabel.Font = new System.Drawing.Font("Microsoft JhengHei UI", 12F);
-            this.lblPayLabel.Location = new System.Drawing.Point(10, 118);
+            this.lblPayLabel.Location = new System.Drawing.Point(10, 112);
             this.lblPayLabel.Name = "lblPayLabel";
             this.lblPayLabel.Size = new System.Drawing.Size(74, 21);
             this.lblPayLabel.TabIndex = 5;
@@ -331,7 +311,7 @@ namespace PosSystem.Forms
             // numPay
             //
             this.numPay.Font = new System.Drawing.Font("Microsoft JhengHei UI", 13F);
-            this.numPay.Location = new System.Drawing.Point(94, 114);
+            this.numPay.Location = new System.Drawing.Point(94, 108);
             this.numPay.Maximum = new decimal(new int[] { 9999999, 0, 0, 0 });
             this.numPay.Name = "numPay";
             this.numPay.Size = new System.Drawing.Size(150, 31);
@@ -343,12 +323,62 @@ namespace PosSystem.Forms
             //
             this.lblChange.Font = new System.Drawing.Font("Microsoft JhengHei UI", 13F, System.Drawing.FontStyle.Bold);
             this.lblChange.ForeColor = System.Drawing.Color.SeaGreen;
-            this.lblChange.Location = new System.Drawing.Point(270, 114);
+            this.lblChange.Location = new System.Drawing.Point(270, 108);
             this.lblChange.Name = "lblChange";
             this.lblChange.Size = new System.Drawing.Size(240, 31);
             this.lblChange.TabIndex = 7;
             this.lblChange.Text = "找零：$ 0";
             this.lblChange.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            //
+            // btnExact
+            //
+            this.btnExact.Location = new System.Drawing.Point(10, 150);
+            this.btnExact.Name = "btnExact";
+            this.btnExact.Size = new System.Drawing.Size(90, 36);
+            this.btnExact.TabIndex = 8;
+            this.btnExact.Text = "剛好";
+            this.btnExact.UseVisualStyleBackColor = true;
+            this.btnExact.Click += new System.EventHandler(this.btnExact_Click);
+            //
+            // btnPay100
+            //
+            this.btnPay100.Location = new System.Drawing.Point(106, 150);
+            this.btnPay100.Name = "btnPay100";
+            this.btnPay100.Size = new System.Drawing.Size(80, 36);
+            this.btnPay100.TabIndex = 9;
+            this.btnPay100.Text = "+100";
+            this.btnPay100.UseVisualStyleBackColor = true;
+            this.btnPay100.Click += new System.EventHandler(this.btnPay100_Click);
+            //
+            // btnPay500
+            //
+            this.btnPay500.Location = new System.Drawing.Point(192, 150);
+            this.btnPay500.Name = "btnPay500";
+            this.btnPay500.Size = new System.Drawing.Size(80, 36);
+            this.btnPay500.TabIndex = 10;
+            this.btnPay500.Text = "+500";
+            this.btnPay500.UseVisualStyleBackColor = true;
+            this.btnPay500.Click += new System.EventHandler(this.btnPay500_Click);
+            //
+            // btnPay1000
+            //
+            this.btnPay1000.Location = new System.Drawing.Point(278, 150);
+            this.btnPay1000.Name = "btnPay1000";
+            this.btnPay1000.Size = new System.Drawing.Size(90, 36);
+            this.btnPay1000.TabIndex = 11;
+            this.btnPay1000.Text = "+1000";
+            this.btnPay1000.UseVisualStyleBackColor = true;
+            this.btnPay1000.Click += new System.EventHandler(this.btnPay1000_Click);
+            //
+            // btnPayClear
+            //
+            this.btnPayClear.Location = new System.Drawing.Point(374, 150);
+            this.btnPayClear.Name = "btnPayClear";
+            this.btnPayClear.Size = new System.Drawing.Size(80, 36);
+            this.btnPayClear.TabIndex = 12;
+            this.btnPayClear.Text = "歸零";
+            this.btnPayClear.UseVisualStyleBackColor = true;
+            this.btnPayClear.Click += new System.EventHandler(this.btnPayClear_Click);
             //
             // btnCheckout
             //
@@ -359,13 +389,79 @@ namespace PosSystem.Forms
             this.btnCheckout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCheckout.Font = new System.Drawing.Font("Microsoft JhengHei UI", 15F, System.Drawing.FontStyle.Bold);
             this.btnCheckout.ForeColor = System.Drawing.Color.White;
-            this.btnCheckout.Location = new System.Drawing.Point(10, 156);
+            this.btnCheckout.Location = new System.Drawing.Point(10, 196);
             this.btnCheckout.Name = "btnCheckout";
-            this.btnCheckout.Size = new System.Drawing.Size(506, 46);
-            this.btnCheckout.TabIndex = 8;
+            this.btnCheckout.Size = new System.Drawing.Size(506, 44);
+            this.btnCheckout.TabIndex = 13;
             this.btnCheckout.Text = "結　帳";
             this.btnCheckout.UseVisualStyleBackColor = false;
             this.btnCheckout.Click += new System.EventHandler(this.btnCheckout_Click);
+            //
+            // dgvCart
+            //
+            this.dgvCart.AllowUserToAddRows = false;
+            this.dgvCart.AllowUserToDeleteRows = false;
+            this.dgvCart.AutoGenerateColumns = false;
+            this.dgvCart.BackgroundColor = System.Drawing.Color.White;
+            this.dgvCart.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvCart.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvCart.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+                this.colCName, this.colCPrice, this.colCQty, this.colCSub});
+            this.dgvCart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvCart.Location = new System.Drawing.Point(8, 40);
+            this.dgvCart.MultiSelect = false;
+            this.dgvCart.Name = "dgvCart";
+            this.dgvCart.ReadOnly = true;
+            this.dgvCart.RowHeadersVisible = false;
+            this.dgvCart.RowTemplate.Height = 32;
+            this.dgvCart.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvCart.Size = new System.Drawing.Size(524, 360);
+            this.dgvCart.TabIndex = 1;
+            //
+            // colCName
+            //
+            this.colCName.DataPropertyName = "ProductName";
+            this.colCName.HeaderText = "商品";
+            this.colCName.Name = "colCName";
+            this.colCName.ReadOnly = true;
+            this.colCName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            //
+            // colCPrice
+            //
+            this.colCPrice.DataPropertyName = "UnitPrice";
+            this.colCPrice.HeaderText = "單價";
+            this.colCPrice.Name = "colCPrice";
+            this.colCPrice.ReadOnly = true;
+            this.colCPrice.Width = 80;
+            //
+            // colCQty
+            //
+            this.colCQty.DataPropertyName = "Quantity";
+            this.colCQty.HeaderText = "數量";
+            this.colCQty.Name = "colCQty";
+            this.colCQty.ReadOnly = true;
+            this.colCQty.Width = 60;
+            //
+            // colCSub
+            //
+            this.colCSub.DataPropertyName = "Subtotal";
+            this.colCSub.HeaderText = "小計";
+            this.colCSub.Name = "colCSub";
+            this.colCSub.ReadOnly = true;
+            this.colCSub.Width = 100;
+            //
+            // lblEmptyHint
+            //
+            this.lblEmptyHint.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblEmptyHint.Font = new System.Drawing.Font("Microsoft JhengHei UI", 12F);
+            this.lblEmptyHint.ForeColor = System.Drawing.Color.FromArgb(150, 158, 170);
+            this.lblEmptyHint.BackColor = System.Drawing.Color.White;
+            this.lblEmptyHint.Location = new System.Drawing.Point(8, 40);
+            this.lblEmptyHint.Name = "lblEmptyHint";
+            this.lblEmptyHint.Size = new System.Drawing.Size(524, 360);
+            this.lblEmptyHint.TabIndex = 3;
+            this.lblEmptyHint.Text = "🛒 購物車是空的\r\n\r\n請從左側「雙擊商品」，\r\n或在條碼欄掃描 / 輸入條碼加入";
+            this.lblEmptyHint.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             //
             // frmPos
             //
@@ -375,7 +471,7 @@ namespace PosSystem.Forms
             this.Controls.Add(this.pnlRight);
             this.Controls.Add(this.pnlLeft);
             this.Font = new System.Drawing.Font("Microsoft JhengHei UI", 10.5F);
-            this.MinimumSize = new System.Drawing.Size(940, 600);
+            this.MinimumSize = new System.Drawing.Size(940, 620);
             this.Name = "frmPos";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "POS 結帳";
@@ -396,10 +492,12 @@ namespace PosSystem.Forms
 
         private System.Windows.Forms.Panel pnlLeft;
         private System.Windows.Forms.DataGridView dgvProducts;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPBarcode;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPPrice;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPStock;
         private System.Windows.Forms.Panel pnlPick;
+        private System.Windows.Forms.Label lblBarcodeFeedback;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblSearch;
         private System.Windows.Forms.TextBox txtBarcode;
@@ -411,7 +509,13 @@ namespace PosSystem.Forms
         private System.Windows.Forms.DataGridViewTextBoxColumn colCPrice;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCQty;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCSub;
+        private System.Windows.Forms.Label lblEmptyHint;
         private System.Windows.Forms.Panel pnlCheckout;
+        private System.Windows.Forms.Button btnPayClear;
+        private System.Windows.Forms.Button btnPay1000;
+        private System.Windows.Forms.Button btnPay500;
+        private System.Windows.Forms.Button btnPay100;
+        private System.Windows.Forms.Button btnExact;
         private System.Windows.Forms.Button btnCheckout;
         private System.Windows.Forms.Label lblChange;
         private System.Windows.Forms.NumericUpDown numPay;
