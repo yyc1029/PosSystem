@@ -29,10 +29,12 @@ namespace PosSystem.Forms
             this.lblWelcome = new System.Windows.Forms.Label();
             this.lblDateTime = new System.Windows.Forms.Label();
             this.lblLowStockTitle = new System.Windows.Forms.Label();
+            this.lblLowStockHint = new System.Windows.Forms.Label();
             this.dgvLowStock = new System.Windows.Forms.DataGridView();
             this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colStock = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSafety = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colAction = new System.Windows.Forms.DataGridViewButtonColumn();
             this.pnlSide.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLowStock)).BeginInit();
             this.SuspendLayout();
@@ -135,6 +137,17 @@ namespace PosSystem.Forms
             this.lblLowStockTitle.TabIndex = 3;
             this.lblLowStockTitle.Text = "低庫存警示";
             //
+            // lblLowStockHint
+            //
+            this.lblLowStockHint.AutoSize = true;
+            this.lblLowStockHint.Font = new System.Drawing.Font("Microsoft JhengHei UI", 9.5F);
+            this.lblLowStockHint.ForeColor = System.Drawing.Color.Gray;
+            this.lblLowStockHint.Location = new System.Drawing.Point(236, 150);
+            this.lblLowStockHint.Name = "lblLowStockHint";
+            this.lblLowStockHint.Size = new System.Drawing.Size(90, 18);
+            this.lblLowStockHint.TabIndex = 5;
+            this.lblLowStockHint.Text = "💡 點該列的「前往補貨」按鈕，或雙擊該列，即可快速進貨補充庫存";
+            //
             // dgvLowStock
             //
             this.dgvLowStock.AllowUserToAddRows = false;
@@ -145,14 +158,17 @@ namespace PosSystem.Forms
             this.dgvLowStock.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvLowStock.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLowStock.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-                this.colName, this.colStock, this.colSafety});
-            this.dgvLowStock.Location = new System.Drawing.Point(234, 150);
+                this.colName, this.colStock, this.colSafety, this.colAction});
+            this.dgvLowStock.Location = new System.Drawing.Point(234, 178);
             this.dgvLowStock.Name = "dgvLowStock";
             this.dgvLowStock.ReadOnly = true;
             this.dgvLowStock.RowHeadersVisible = false;
+            this.dgvLowStock.RowTemplate.Height = 30;
             this.dgvLowStock.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvLowStock.Size = new System.Drawing.Size(680, 440);
+            this.dgvLowStock.Size = new System.Drawing.Size(680, 412);
             this.dgvLowStock.TabIndex = 4;
+            this.dgvLowStock.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvLowStock_CellContentClick);
+            this.dgvLowStock.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvLowStock_CellDoubleClick);
             //
             // colName
             //
@@ -172,12 +188,22 @@ namespace PosSystem.Forms
             this.colSafety.Name = "colSafety";
             this.colSafety.Width = 120;
             //
+            // colAction
+            //
+            this.colAction.HeaderText = "操作";
+            this.colAction.Name = "colAction";
+            this.colAction.Text = "前往補貨";
+            this.colAction.UseColumnTextForButtonValue = true;
+            this.colAction.Width = 130;
+            this.colAction.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
+            //
             // frmMain
             //
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(245, 246, 250);
             this.ClientSize = new System.Drawing.Size(940, 620);
             this.Controls.Add(this.dgvLowStock);
+            this.Controls.Add(this.lblLowStockHint);
             this.Controls.Add(this.lblLowStockTitle);
             this.Controls.Add(this.lblDateTime);
             this.Controls.Add(this.lblWelcome);
@@ -225,9 +251,11 @@ namespace PosSystem.Forms
         private System.Windows.Forms.Label lblWelcome;
         private System.Windows.Forms.Label lblDateTime;
         private System.Windows.Forms.Label lblLowStockTitle;
+        private System.Windows.Forms.Label lblLowStockHint;
         private System.Windows.Forms.DataGridView dgvLowStock;
         private System.Windows.Forms.DataGridViewTextBoxColumn colName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colStock;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSafety;
+        private System.Windows.Forms.DataGridViewButtonColumn colAction;
     }
 }

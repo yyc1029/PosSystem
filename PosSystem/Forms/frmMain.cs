@@ -33,6 +33,10 @@ namespace PosSystem.Forms
             btnEmployee.Visible = isAdmin;
             btnReport.Visible = isAdmin;
 
+            // 「前往補貨」按鈕只開放給管理員（收銀員無進貨權限）
+            colAction.Visible = isAdmin;
+            lblLowStockHint.Visible = isAdmin;
+
             LoadLowStock();
         }
 
@@ -43,12 +47,40 @@ namespace PosSystem.Forms
             dgvLowStock.Rows.Clear();
             foreach (var p in low)
             {
-                int idx = dgvLowStock.Rows.Add(p.Name, p.Stock, p.SafetyStock);
-                dgvLowStock.Rows[idx].DefaultCellStyle.ForeColor = Color.Firebrick;
+                int idx = dgvLowStock.Rows.Add(p.Name, p.Stock, p.SafetyStock, "前往補貨");
+                var row = dgvLowStock.Rows[idx];
+                row.Tag = p.Id;   // 記住商品 Id，供補貨跳轉使用
+                // 只把文字欄位標紅，按鈕維持原樣
+                for (int c = 0; c < 3; c++)
+                    row.Cells[c].Style.ForeColor = Color.Firebrick;
             }
             lblLowStockTitle.Text = low.Count > 0
                 ? $"⚠ 低庫存警示（{low.Count} 項商品需補貨）"
                 : "✓ 庫存狀況良好，目前沒有低庫存商品";
+        }
+
+        /// <summary>開啟進貨頁面並自動選好指定商品。</summary>
+        private void OpenPurchaseFor(int productId)
+        {
+            if (!AuthService.IsAdmin) return;
+            using (var f = new frmPurchase(productId)) f.ShowDialog();
+            LoadLowStock();
+        }
+
+        // 點「前往補貨」按鈕
+        private void dgvLowStock_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.ColumnIndex != colAction.Index) return;
+            if (dgvLowStock.Rows[e.RowIndex].Tag is int pid)
+                OpenPurchaseFor(pid);
+        }
+
+        // 雙擊整列也可補貨
+        private void dgvLowStock_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            if (dgvLowStock.Rows[e.RowIndex].Tag is int pid)
+                OpenPurchaseFor(pid);
         }
 
         // ---- 導覽按鈕 ----

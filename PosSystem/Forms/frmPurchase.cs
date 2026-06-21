@@ -17,15 +17,32 @@ namespace PosSystem.Forms
         private readonly PurchaseRepository _purchaseRepo = new PurchaseRepository();
         private readonly List<PurchaseItem> _cart = new List<PurchaseItem>();
 
+        // 由低庫存清單跳轉而來時，預先選好的商品 Id（0 表示不指定）
+        private readonly int _preselectId;
+
         public frmPurchase()
         {
             InitializeComponent();
+        }
+
+        /// <summary>從低庫存「前往補貨」跳轉時使用，自動選好該商品。</summary>
+        public frmPurchase(int preselectProductId) : this()
+        {
+            _preselectId = preselectProductId;
         }
 
         private void frmPurchase_Load(object sender, EventArgs e)
         {
             LoadProducts();
             RefreshCart();
+
+            // 自動選好指定商品並把游標移到「數量」，店員只要輸入數量即可入庫
+            if (_preselectId > 0)
+            {
+                cboProduct.SelectedValue = _preselectId;
+                numQty.Focus();
+                numQty.Select(0, numQty.Text.Length);
+            }
         }
 
         private void LoadProducts()
