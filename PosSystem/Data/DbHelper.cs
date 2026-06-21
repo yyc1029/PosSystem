@@ -17,6 +17,44 @@ namespace PosSystem.Data
         public static string ConnectionString =>
             $"Data Source={DbPath};Version=3;";
 
+        /// <summary>目前資料庫檔的完整路徑。</summary>
+        public static string DbFilePath => DbPath;
+
+        /// <summary>匯出（備份）：將目前資料庫複製到指定檔案。</summary>
+        public static void Backup(string destPath)
+        {
+            File.Copy(DbPath, destPath, true);
+        }
+
+        /// <summary>
+        /// 匯入（還原）：以來源檔取代目前資料庫。會先驗證來源檔是有效的本系統資料庫。
+        /// </summary>
+        public static void Restore(string srcPath)
+        {
+            if (!File.Exists(srcPath))
+                throw new FileNotFoundException("找不到匯入檔案。");
+
+            // 驗證來源檔含有本系統的核心資料表，避免誤匯入不相干的檔案
+            using (var conn = new SQLiteConnection($"Data Source={srcPath};Version=3;"))
+            {
+                conn.Open();
+                using (var cmd = new SQLiteCommand(
+                    "SELECT COUNT(*) FROM sqlite_master WHERE type='table' " +
+                    "AND name IN ('Products','SaleOrders','Employees');", conn))
+                {
+                    long n = (long)cmd.ExecuteScalar();
+                    if (n < 3)
+                        throw new InvalidOperationException("這不是有效的 POS 系統資料庫檔。");
+                }
+            }
+
+            // 釋放連線池避免檔案被鎖住，再覆蓋目前資料庫
+            SQLiteConnection.ClearAllPools();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            File.Copy(srcPath, DbPath, true);
+        }
+
         /// <summary>建立並開啟一個資料庫連線（呼叫端負責 using 釋放）。</summary>
         public static SQLiteConnection GetConnection()
         {

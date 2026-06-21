@@ -28,6 +28,8 @@ namespace PosSystem.Forms
             this.btnLogout = new System.Windows.Forms.Button();
             this.lblWelcome = new System.Windows.Forms.Label();
             this.lblDateTime = new System.Windows.Forms.Label();
+            this.btnExport = new System.Windows.Forms.Button();
+            this.btnImport = new System.Windows.Forms.Button();
             this.lblLowStockTitle = new System.Windows.Forms.Label();
             this.lblLowStockHint = new System.Windows.Forms.Label();
             this.dgvLowStock = new System.Windows.Forms.DataGridView();
@@ -126,6 +128,40 @@ namespace PosSystem.Forms
             this.lblDateTime.TabIndex = 2;
             this.lblDateTime.Text = "日期";
             //
+            // btnExport
+            //
+            this.btnExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExport.BackColor = System.Drawing.Color.FromArgb(46, 134, 222);
+            this.btnExport.FlatAppearance.BorderSize = 0;
+            this.btnExport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnExport.Font = new System.Drawing.Font("Microsoft JhengHei UI", 10.5F);
+            this.btnExport.ForeColor = System.Drawing.Color.White;
+            this.btnExport.Location = new System.Drawing.Point(686, 30);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(110, 42);
+            this.btnExport.TabIndex = 5;
+            this.btnExport.Text = "📤 匯出資料";
+            this.btnExport.UseVisualStyleBackColor = false;
+            this.btnExport.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            //
+            // btnImport
+            //
+            this.btnImport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnImport.BackColor = System.Drawing.Color.FromArgb(39, 174, 96);
+            this.btnImport.FlatAppearance.BorderSize = 0;
+            this.btnImport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnImport.Font = new System.Drawing.Font("Microsoft JhengHei UI", 10.5F);
+            this.btnImport.ForeColor = System.Drawing.Color.White;
+            this.btnImport.Location = new System.Drawing.Point(804, 30);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.Size = new System.Drawing.Size(110, 42);
+            this.btnImport.TabIndex = 6;
+            this.btnImport.Text = "📥 匯入資料";
+            this.btnImport.UseVisualStyleBackColor = false;
+            this.btnImport.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
+            //
             // lblLowStockTitle
             //
             this.lblLowStockTitle.AutoSize = true;
@@ -205,6 +241,8 @@ namespace PosSystem.Forms
             this.Controls.Add(this.dgvLowStock);
             this.Controls.Add(this.lblLowStockHint);
             this.Controls.Add(this.lblLowStockTitle);
+            this.Controls.Add(this.btnExport);
+            this.Controls.Add(this.btnImport);
             this.Controls.Add(this.lblDateTime);
             this.Controls.Add(this.lblWelcome);
             this.Controls.Add(this.pnlSide);
@@ -250,6 +288,8 @@ namespace PosSystem.Forms
         private System.Windows.Forms.Button btnLogout;
         private System.Windows.Forms.Label lblWelcome;
         private System.Windows.Forms.Label lblDateTime;
+        private System.Windows.Forms.Button btnExport;
+        private System.Windows.Forms.Button btnImport;
         private System.Windows.Forms.Label lblLowStockTitle;
         private System.Windows.Forms.Label lblLowStockHint;
         private System.Windows.Forms.DataGridView dgvLowStock;

@@ -37,6 +37,10 @@ namespace PosSystem.Forms
             colAction.Visible = isAdmin;
             lblLowStockHint.Visible = isAdmin;
 
+            // 資料匯出 / 匯入僅限管理員
+            btnExport.Visible = isAdmin;
+            btnImport.Visible = isAdmin;
+
             LoadLowStock();
         }
 
@@ -117,6 +121,62 @@ namespace PosSystem.Forms
         private void btnEmployee_Click(object sender, EventArgs e)
         {
             using (var f = new frmEmployee()) f.ShowDialog();
+        }
+
+        // ---- 資料匯出 / 匯入（讓資料能在不同電腦間搬移） ----
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            using (var dlg = new SaveFileDialog())
+            {
+                dlg.Title = "匯出資料（備份）";
+                dlg.Filter = "POS 資料庫檔 (*.db)|*.db";
+                dlg.FileName = "pos_backup_" + DateTime.Now.ToString("yyyyMMdd_HHmm") + ".db";
+                if (dlg.ShowDialog() != DialogResult.OK) return;
+
+                try
+                {
+                    DbHelper.Backup(dlg.FileName);
+                    MessageBox.Show(
+                        "資料已匯出到：\n" + dlg.FileName +
+                        "\n\n可將此檔複製到隨身碟，於其他電腦用「匯入資料」載入。",
+                        "匯出成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("匯出失敗：" + ex.Message, "錯誤",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+            using (var dlg = new OpenFileDialog())
+            {
+                dlg.Title = "匯入資料（還原）";
+                dlg.Filter = "POS 資料庫檔 (*.db)|*.db";
+                if (dlg.ShowDialog() != DialogResult.OK) return;
+
+                if (MessageBox.Show(
+                    "匯入將以選取的檔案「取代」目前所有資料，且無法復原。\n" +
+                    "建議先用「匯出資料」備份目前資料。\n\n確定要匯入嗎？",
+                    "確認匯入", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                    return;
+
+                try
+                {
+                    DbHelper.Restore(dlg.FileName);
+                    LoadLowStock();
+                    MessageBox.Show("資料已匯入並重新載入。", "匯入成功",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("匯入失敗：" + ex.Message, "錯誤",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private void btnLogout_Click(object sender, EventArgs e)
